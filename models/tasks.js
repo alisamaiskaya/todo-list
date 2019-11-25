@@ -6,7 +6,8 @@ function findAll() {
             'id', 
             'taskDescription',
             'createdAt',
-            'finished'
+            'finished',
+            'updatedAt'
         ])
         .from('todos')
         .orderBy([
@@ -21,7 +22,8 @@ function findById(id) {
         'id',
         'taskDescription',
         'createdAt',
-        'finished'
+        'finished',
+        'updatedAt'
     ])
     .from('todos')
     .where('id', id)
@@ -43,7 +45,10 @@ function addTask(taskDescription) {
  */
 function update(id, values) {
     return knex('todos')
-    .update(values)
+    .update({
+        updatedAt: knex.fn.now(),
+        ...values
+    })
     .where('id', id)
     .returning('*')
 }
