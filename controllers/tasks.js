@@ -1,5 +1,8 @@
 const { Router } = require('express');
 const TasksModel = require('../models/tasks');
+const { prepareParamsId } = require('../middlewares/prepare-params-id');
+const { pickTasksFieldsAndCheck } = require('../middlewares/pick-fields');
+const { requiredFields } = require('../middlewares/required-fields');
 
 const router = Router();
 
@@ -11,16 +14,15 @@ router.get('/tasks', async (req, res) => {
     });
 });
 
-router.get('/tasks/:id', async (req, res) => {
-    const id = parseInt(req.params.id, 10);
-    const [task] = await TasksModel.findById(id);
+router.get('/tasks/:id', prepareParamsId, async (req, res) => {
+    const [task] = await TasksModel.findById(req.params.id);
 
     res.json({
         data: task,
     });
 });
 
-router.post('/tasks', async (req, res) => {
+router.post('/tasks',requiredFields, pickTasksFieldsAndCheck, async (req, res) => {
     const [task] = await TasksModel.addTask(req.body.text);
 
     res.json({
@@ -28,18 +30,21 @@ router.post('/tasks', async (req, res) => {
     });
 });
 
-router.put('/tasks/:id', async (req, res) => {
-    const id = parseInt(req.params.id);
-    const [task] = await TasksModel.update(id, req.body);
-    
-    res.json({
-        data: task,
-    });
-});
+router.put(
+    '/tasks/:id',
+    prepareParamsId,
+    pickTasksFieldsAndCheck,
+    async (req, res) => {
+        const [task] = await TasksModel.update(req.params.id, req.body);
 
-router.delete('/tasks/:id', async (req, res) => {
-    const id = parseInt(req.params.id);
-    const [task] = await TasksModel.deleteTask(id);
+        res.json({
+            data: task,
+        });
+    },
+);
+
+router.delete('/tasks/:id', prepareParamsId, async (req, res) => {
+    const [task] = await TasksModel.deleteTask(req.params.id);
 
     res.json({
         data: task
