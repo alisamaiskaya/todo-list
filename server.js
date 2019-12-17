@@ -9,7 +9,6 @@ app.use(tasksRouter.router);
 
 app.get('/name', (req, res) => {
     const n = req.query.n;
-
     res.send(`Bonjoure, ${n}!`);
 });
 
