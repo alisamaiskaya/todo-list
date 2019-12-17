@@ -6,7 +6,7 @@ const requiredFields = (req, res, next) => {
         return;
     }
 
-    req.body = { taskDescription};
+    req.body = { taskDescription };
 
     next();
 }
