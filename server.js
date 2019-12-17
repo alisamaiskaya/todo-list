@@ -10,7 +10,7 @@ app.use(tasksRouter.router);
 app.get('/name', (req, res) => {
     const n = req.query.n;
 
-    res.send(`Hello, ${n}!`);
+    res.send(`Привет, ${n}!`);
 });
 
 app.listen(8080, () => {
